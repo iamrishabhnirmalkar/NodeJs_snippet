@@ -62,10 +62,30 @@ git remote add origin https://github.com/your-username/your-repo.git
 git push origin master
 ```
 
-Create a .gitignore file to exclude files from being pushed to GitHub:
+Create a `.gitignore` file to exclude files from being pushed to GitHub:
 
 ```sh
 node_modules
 dist
 .env
 ```
+
+## Husky
+
+### About Husky
+
+Husky is a popular tool used in Git repositories to manage and enforce Git hooks. Git hooks are scripts that Git executes before or after events such as committing, pushing, and receiving changes.
+
+Install Husky and lint-staged:
+
+```bash
+npm i husky lint-staged -D
+```
+
+Initialize Husky:
+
+```bash
+npx husky init
+```
+
+After this, the .husky folder will be created. Create a pre-commit hook:

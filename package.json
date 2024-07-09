@@ -4,9 +4,14 @@
   "description": "- [Node Project](#node-project)\r - [Git & Github](#git--github)\r - [Husky](#husky)\r - [TypeScript](#typescript)\r - [Folder Structure](#folder-structure)\r - [Commit Lint](#commit-lint)\r - [ES Lint](#es-lint)\r - [Prettier](#prettier)\r - [Project Environment](#project-environment)\r - [Express Js](#express-js)\r - [Global Error Handler](#global-error-handler)\r - [404 Handler](#404-handler)\r - [Logger](#logger)\r - [Source Map]\r - [Colorful Terminal]\r - [MongoDB]\r - [Database Log Storage]\r - [Database Migration]\r - [Health Endpoint]\r - [Security - Helmet JS]\r - [Security - CORS]\r - [Security - Rate Limiting]\r - [Dependency Updates]\r - [Docker]",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "husky"
   },
   "keywords": [],
   "author": "Rishabh Nirmalkar",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.7"
+  }
 }
