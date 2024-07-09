@@ -89,3 +89,65 @@ npx husky init
 ```
 
 After this, the .husky folder will be created. Create a pre-commit hook:
+
+## TypeScript
+
+Install TypeScript as a dev dependency:
+
+```bash
+npm i typescript -D
+```
+
+Initialize TypeScript configuration:
+
+```bash
+npx tsc --init
+```
+
+In tsconfig.json, enable the following options:
+
+```json
+{
+  "compilerOptions": {
+    "target": "es2016",
+    "module": "commonjs",
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "removeComments": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "strictFunctionTypes": true,
+    "strictNullChecks": true,
+    "strictPropertyInitialization": true,
+    "noUnusedParameters": true,
+    "noUnusedLocals": true,
+    "alwaysStrict": true,
+    "noImplicitReturns": true
+  }
+}
+```
+
+Install type definitions for Node.js:
+
+```bash
+npm i -D @types/node
+```
+
+Install nodemon and ts-node:
+
+```bash
+npm i nodemon ts-node -D
+
+```
+
+Add the following scripts to your package.json:
+
+```json
+  "scripts": {
+  "start": "nodemon src/server.ts",
+  "build": "tsc",
+  "dev": "nodemon dist/server.js"
+}
+```
