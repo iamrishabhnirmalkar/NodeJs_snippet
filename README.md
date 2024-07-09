@@ -191,3 +191,86 @@ mkdir -p src/config src/constants src/controllers src/middlewares src/models src
 8. types: Defines TypeScript types and interfaces used throughout the application for type checking and consistency.
 9. utils: Utility functions and helpers that can be reused across the application.
 10. views: Stores template files or view-related code if using server-side rendering.1.
+
+## Commit Lint
+
+### About
+
+Commit Lint is a tool used to enforce consistent commit message formats in a Git repository. It helps ensure that commit messages follow specified guidelines, which can be particularly useful in maintaining a readable and meaningful commit history.
+
+Install Commit Lint and the conventional config package:
+
+```bash
+npm i @commitlint/cli @commitlint/config-conventional -D
+```
+
+#### Setup
+
+Create a .husky/commit-msg file to add the commit-msg hook:
+
+```json
+#!/user/bin/env sh
+. "$(dirname "$0")/_/husky.sh"
+
+npx --no-install commitlint --edit "$1"
+
+```
+
+Create a commitlint.config.js file in the root directory of your project with the following content:
+
+```json
+
+module.exports = {
+  extends: ["@commitlint/cli", "@commitlint/config-conventional"],
+  rules: {
+    "type-enum": [
+      2,
+      "always",
+      [
+        "feat",
+        "fix",
+        "docs",
+        "style",
+        "refactor",
+        "perf",
+        "test",
+        "build",
+        "ci",
+        "chore",
+        "revert",
+      ],
+    ],
+
+    "subject-case": [2, "always", "sentence-case"],
+  },
+};
+
+```
+
+### Commit Message Guidelines
+
+By using this configuration, you should always commit in a proper way. Here are some examples:
+
+- Feature:
+
+```bash
+git commit -m "feat: This is a new feature"
+```
+
+- Bug Fix:
+
+```bash
+git commit -m "fix: This is a bug fix"
+```
+
+1. feat: A new feature for the user.
+2. fix: A bug fix for the user.
+3. docs: Documentation only changes.
+4. style: Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc.).
+5. refactor: A code change that neither fixes a bug nor adds a feature.
+6. perf: A code change that improves performance.
+7. test: Adding missing tests or correcting existing tests.
+8. build: Changes that affect the build system or external dependencies.
+9. ci: Changes to CI configuration files and scripts.
+10. chore: Other changes that don't modify src or test files.
+11. revert: Reverts a previous commit.
