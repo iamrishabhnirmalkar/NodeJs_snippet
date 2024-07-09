@@ -1,36 +1,41 @@
 {
-  "name": "nodejs",
-  "version": "1.0.0",
-  "description": "- [Node Project](#node-project)\r - [Git & Github](#git--github)\r - [Husky](#husky)\r - [TypeScript](#typescript)\r - [Folder Structure](#folder-structure)\r - [Commit Lint](#commit-lint)\r - [ES Lint](#es-lint)\r - [Prettier](#prettier)\r - [Project Environment](#project-environment)\r - [Express Js](#express-js)\r - [Global Error Handler](#global-error-handler)\r - [404 Handler](#404-handler)\r - [Logger](#logger)\r - [Source Map]\r - [Colorful Terminal]\r - [MongoDB]\r - [Database Log Storage]\r - [Database Migration]\r - [Health Endpoint]\r - [Security - Helmet JS]\r - [Security - CORS]\r - [Security - Rate Limiting]\r - [Dependency Updates]\r - [Docker]",
-  "main": "index.js",
-  "scripts": {
-    "start": "nodemon src/server.ts",
-    "build": "tsc",
-    "dev": "nodemon dist/server.js",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "prepare": "husky"
-  },
-  "keywords": [],
-  "author": "Rishabh Nirmalkar",
-  "license": "ISC",
-  "lint-staged": {
-    "*.ts": [
-      "npm run lint:fix"
-    ]
-  },
-  "devDependencies": {
-    "@commitlint/cli": "^19.3.0",
-    "@commitlint/config-conventional": "^19.2.2",
-    "@eslint/js": "^9.6.0",
-    "@types/eslint__js": "^8.42.3",
-    "@types/node": "^20.14.10",
-    "eslint": "^8.57.0",
-    "husky": "^9.0.11",
-    "lint-staged": "^15.2.7",
-    "nodemon": "^3.1.4",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.5.3",
-    "typescript-eslint": "^7.16.0"
-  }
+    "name": "nodejs",
+    "version": "1.0.0",
+    "description": "- [Node Project](#node-project)\r - [Git & Github](#git--github)\r - [Husky](#husky)\r - [TypeScript](#typescript)\r - [Folder Structure](#folder-structure)\r - [Commit Lint](#commit-lint)\r - [ES Lint](#es-lint)\r - [Prettier](#prettier)\r - [Project Environment](#project-environment)\r - [Express Js](#express-js)\r - [Global Error Handler](#global-error-handler)\r - [404 Handler](#404-handler)\r - [Logger](#logger)\r - [Source Map]\r - [Colorful Terminal]\r - [MongoDB]\r - [Database Log Storage]\r - [Database Migration]\r - [Health Endpoint]\r - [Security - Helmet JS]\r - [Security - CORS]\r - [Security - Rate Limiting]\r - [Dependency Updates]\r - [Docker]",
+    "main": "index.js",
+    "scripts": {
+        "start": "nodemon src/server.ts",
+        "build": "tsc",
+        "dev": "nodemon dist/server.js",
+        "lint": "eslint .",
+        "lint:fix": "eslint . --fix",
+        "format:check": "prettier  --check",
+        "format:fix": "prettier . --fix",
+        "prepare": "husky"
+    },
+    "keywords": [],
+    "author": "Rishabh Nirmalkar",
+    "license": "ISC",
+    "lint-staged": {
+        "*.ts": [
+            "npm run lint:fix"
+        ]
+    },
+    "devDependencies": {
+        "@commitlint/cli": "^19.3.0",
+        "@commitlint/config-conventional": "^19.2.2",
+        "@eslint/js": "^9.6.0",
+        "@types/eslint__js": "^8.42.3",
+        "@types/node": "^20.14.10",
+        "eslint": "^8.57.0",
+        "eslint-config-prettier": "^9.1.0",
+        "husky": "^9.0.11",
+        "lint-staged": "^15.2.7",
+        "nodemon": "^3.1.4",
+        "prettier": "3.3.2",
+        "ts-node": "^10.9.2",
+        "typescript": "^5.5.3",
+        "typescript-eslint": "^7.16.0"
+    }
 }
+

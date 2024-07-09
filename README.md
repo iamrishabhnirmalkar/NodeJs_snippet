@@ -1,29 +1,29 @@
 # Node Js Backend - Production Setup
 
-- [Node Project](#node-project)
-- [Git & Github](#git--github)
-- [Husky](#husky)
-- [TypeScript](#typescript)
-- [Folder Structure](#folder-structure)
-- [Commit Lint](#commit-lint)
-- [ES Lint](#es-lint)
-- [Prettier](#prettier)
-- [Project Environment](#project-environment)
-- [Express Js](#express-js)
-- [Global Error Handler](#global-error-handler)
-- [404 Handler](#404-handler)
-- [Logger](#logger)
-- [Source Map]
-- [Colorful Terminal]
-- [MongoDB]
-- [Database Log Storage]
-- [Database Migration]
-- [Health Endpoint]
-- [Security - Helmet JS]
-- [Security - CORS]
-- [Security - Rate Limiting]
-- [Dependency Updates]
-- [Docker]
+-   [Node Project](#node-project)
+-   [Git & Github](#git--github)
+-   [Husky](#husky)
+-   [TypeScript](#typescript)
+-   [Folder Structure](#folder-structure)
+-   [Commit Lint](#commit-lint)
+-   [ES Lint](#es-lint)
+-   [Prettier](#prettier)
+-   [Project Environment](#project-environment)
+-   [Express Js](#express-js)
+-   [Global Error Handler](#global-error-handler)
+-   [404 Handler](#404-handler)
+-   [Logger](#logger)
+-   [Source Map]
+-   [Colorful Terminal]
+-   [MongoDB]
+-   [Database Log Storage]
+-   [Database Migration]
+-   [Health Endpoint]
+-   [Security - Helmet JS]
+-   [Security - CORS]
+-   [Security - Rate Limiting]
+-   [Dependency Updates]
+-   [Docker]
 
 ## Node Project
 
@@ -108,24 +108,24 @@ In tsconfig.json, enable the following options:
 
 ```json
 {
-  "compilerOptions": {
-    "target": "es2016",
-    "module": "commonjs",
-    "rootDir": "./src",
-    "outDir": "./dist",
-    "removeComments": true,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "noImplicitAny": true,
-    "strictFunctionTypes": true,
-    "strictNullChecks": true,
-    "strictPropertyInitialization": true,
-    "noUnusedParameters": true,
-    "noUnusedLocals": true,
-    "alwaysStrict": true,
-    "noImplicitReturns": true
-  }
+    "compilerOptions": {
+        "target": "es2016",
+        "module": "commonjs",
+        "rootDir": "./src",
+        "outDir": "./dist",
+        "removeComments": true,
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true,
+        "strict": true,
+        "noImplicitAny": true,
+        "strictFunctionTypes": true,
+        "strictNullChecks": true,
+        "strictPropertyInitialization": true,
+        "noUnusedParameters": true,
+        "noUnusedLocals": true,
+        "alwaysStrict": true,
+        "noImplicitReturns": true
+    }
 }
 ```
 
@@ -251,13 +251,13 @@ module.exports = {
 
 By using this configuration, you should always commit in a proper way. Here are some examples:
 
-- Feature:
+-   Feature:
 
 ```bash
 git commit -m "feat: This is a new feature"
 ```
 
-- Bug Fix:
+-   Bug Fix:
 
 ```bash
 git commit -m "fix: This is a bug fix"
@@ -353,4 +353,76 @@ To run ESLint and fix issues based on the rules in your eslint.config.mjs file, 
 ```bash
 npm run lint
 npm run lint:fix
+```
+
+## Prettier
+
+### About
+
+Prettier is an opinionated code formatter that enforces a consistent style by parsing your code and reprinting it with its own rules that take the maximum line length into account, wrapping code when necessary. It supports many languages and integrates with most editors.
+[Prettier](https://prettier.io/)
+
+Install Prettier as a dev dependency:
+
+```bash
+npm install --save-dev --save-exact prettier
+
+
+```
+
+Also, use the Prettier code formatter extension for VS Code:
+
+[Prettier - Code formatter by Prettier] (https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+
+Create a `.prettierrc` file in the root directory of your project and define your preferred Prettier rules. Here’s an example configuration:
+
+```json
+{
+    "trailingComma": "none",
+    "tabWidth": 4,
+    "semi": false,
+    "singleQuote": true,
+    "printWidth": 150,
+    "singleAttributePerLine": true,
+    "endOfLine": "crlf"
+}
+```
+
+### ESLint (and other linters)
+
+If you use ESLint, install eslint-config-prettier to make ESLint and Prettier work well together. This turns off all ESLint rules that are unnecessary or might conflict with Prettier.
+
+```bash
+npm install --save-dev eslint-config-prettier
+
+
+```
+
+Update your eslint.config.mjs file to include Prettier’s configuration:
+
+```js
+
+import eslintconfigPrettier from 'eslint-config-prettier'
+  extends: [ eslintconfigPrettier],
+
+```
+
+Add the following scripts to your package.json to check and fix code formatting:
+
+```json
+"scripts": {
+ "format:check": "prettier . --check",
+        "format:fix": "prettier . --fix"
+}
+
+```
+
+Add the following configuration for lint-staged in your package.json:
+
+```json
+"lint-staged": {
+  "*.ts": [
+    "npm run format:fix"
+  ]
+}
 ```
