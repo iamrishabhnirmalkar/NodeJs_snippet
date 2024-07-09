@@ -7,19 +7,30 @@
     "start": "nodemon src/server.ts",
     "build": "tsc",
     "dev": "nodemon dist/server.js",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "prepare": "husky"
   },
   "keywords": [],
   "author": "Rishabh Nirmalkar",
   "license": "ISC",
+  "lint-staged": {
+    "*.ts": [
+      "npm run lint:fix"
+    ]
+  },
   "devDependencies": {
     "@commitlint/cli": "^19.3.0",
     "@commitlint/config-conventional": "^19.2.2",
+    "@eslint/js": "^9.6.0",
+    "@types/eslint__js": "^8.42.3",
     "@types/node": "^20.14.10",
+    "eslint": "^8.57.0",
     "husky": "^9.0.11",
     "lint-staged": "^15.2.7",
     "nodemon": "^3.1.4",
     "ts-node": "^10.9.2",
-    "typescript": "^5.5.3"
+    "typescript": "^5.5.3",
+    "typescript-eslint": "^7.16.0"
   }
 }

@@ -274,3 +274,83 @@ git commit -m "fix: This is a bug fix"
 9. ci: Changes to CI configuration files and scripts.
 10. chore: Other changes that don't modify src or test files.
 11. revert: Reverts a previous commit.
+
+## ES Lint
+
+### About
+
+ESLint statically analyzes your code to quickly find problems. It is built into most text editors, and you can run ESLint as part of your continuous integration pipeline. Use this link [TypeScript ESLint](https://typescript-eslint.io/)
+
+Install ESLint and the necessary dependencies:
+
+```bash
+npm install --save-dev eslint @eslint/js @types/eslint__js typescript-eslint
+```
+
+Create a configuration file named eslint.config.mjs and paste the following content:
+
+```sh
+import eslint from "@eslint/js";
+import tseslint from "typescript-eslint";
+
+export default tseslint.config({
+  languageOptions: {
+    parserOptions: {
+      project: true,
+      tsconfigRootDir: import.meta.dirname,
+    },
+  },
+  files: ["**/*.ts"],
+  extends: [
+    eslint.configs.recommended,
+    ...tseslint.configs.recommendedTypeChecked,
+  ],
+  rules: {
+    "no-console": "error",
+    quotes: ["error", "single", { allowTemplateLiterals: true }],
+  },
+});
+
+```
+
+Install the following extensions in VS Code:
+
+[ESLint by Microsoft] (https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
+[Error Lens by Alexander] (https://marketplace.visualstudio.com/items?itemName=usernamehw.errorlens)
+
+Add the following scripts to your package.json:
+
+```json
+"scripts": {
+  "lint": "eslint .",
+  "lint:fix": "eslint . --fix"
+}
+```
+
+Add the following configuration for lint-staged in your package.json:
+
+```json
+ "lint-staged": {
+  "*.ts": [
+    "npm run lint:fix"
+  ]
+}
+```
+
+In your Husky folder, create a pre-commit file with the following content:
+
+```sh
+#!/usr/bin/env sh
+. "$(dirname "$0")/_/husky.sh"
+
+npx lint-staged
+
+
+```
+
+To run ESLint and fix issues based on the rules in your eslint.config.mjs file, use the following commands:
+
+```bash
+npm run lint
+npm run lint:fix
+```
