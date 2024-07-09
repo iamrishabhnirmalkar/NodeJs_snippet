@@ -426,3 +426,66 @@ Add the following configuration for lint-staged in your package.json:
   ]
 }
 ```
+
+## Project Environment
+
+### About ENV
+
+Environment variables (env) are used to configure applications without hardcoding values into the source code. They provide flexibility and security by storing configuration settings, such as database credentials and API keys, separately from the codebase. This allows for easy changes across different environments (development, staging, production) without modifying the code. Using environment variables helps keep sensitive information secure and supports best practices for clean, maintainable code.
+
+### cross env
+
+cross-env is a tool that helps you set environment variables across different platforms (like Windows, macOS, and Linux) in a consistent way. In many cases, environment variables are used to configure different settings for your application, such as API keys, environment modes, or build configurations.
+
+First, install `dotenv-flow` and `cross-env`:
+
+```sh
+npm i dotenv-flow
+npm i corss-env
+
+```
+
+Write script in package.json file
+
+```json
+"scripts": {
+  "dist": "npx tsc",
+  "start": "cross-env NODE_ENV=production nodemon dist/server.js",
+  "dev": "cross-env NODE_ENV=development nodemon dist/server.js"
+}
+```
+
+Create a configuration file in the config folder and set up the configuration for the environment variables.
+
+`src/config/config.ts`
+
+```ts
+import DotenvFlow from 'dotenv-flow'
+
+DotenvFlow.config()
+// console.log(process.env)
+
+export default {
+    ENV: process.env.ENV,
+    PORT: process.env.PORT,
+    SERVEL_URL: process.env.SERVAL_URL,
+    DATABASE_URL: process.env.DATABASE_URL
+}
+```
+
+for write script in the package.json file
+
+```json
+"dist": "npx tsc",
+"start": "cross-env NODE_ENV=production nodemon src/server.ts",
+"dev": "cross-env NODE_ENV=development nodemon dis/server.js",
+```
+
+To test this configuration, import the config.ts file in your server.ts file and log the configuration object:
+
+```ts
+import config from './config/config'
+console.log(config)
+```
+
+after run this by npm run start you will see the object of the Env prodcution

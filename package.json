@@ -4,9 +4,9 @@
     "description": "- [Node Project](#node-project)\r - [Git & Github](#git--github)\r - [Husky](#husky)\r - [TypeScript](#typescript)\r - [Folder Structure](#folder-structure)\r - [Commit Lint](#commit-lint)\r - [ES Lint](#es-lint)\r - [Prettier](#prettier)\r - [Project Environment](#project-environment)\r - [Express Js](#express-js)\r - [Global Error Handler](#global-error-handler)\r - [404 Handler](#404-handler)\r - [Logger](#logger)\r - [Source Map]\r - [Colorful Terminal]\r - [MongoDB]\r - [Database Log Storage]\r - [Database Migration]\r - [Health Endpoint]\r - [Security - Helmet JS]\r - [Security - CORS]\r - [Security - Rate Limiting]\r - [Dependency Updates]\r - [Docker]",
     "main": "index.js",
     "scripts": {
-        "start": "nodemon src/server.ts",
-        "build": "tsc",
-        "dev": "nodemon dist/server.js",
+        "dist": "npx tsc",
+        "start": "cross-env NODE_ENV=production nodemon dist/server.js",
+        "dev": "cross-env NODE_ENV=development nodemon dist/server.js",
         "lint": "eslint .",
         "lint:fix": "eslint . --fix",
         "format:check": "prettier  --check",
@@ -36,6 +36,9 @@
         "ts-node": "^10.9.2",
         "typescript": "^5.5.3",
         "typescript-eslint": "^7.16.0"
+    },
+    "dependencies": {
+        "cross-env": "^7.0.3",
+        "dotenv-flow": "^4.1.0"
     }
 }
-
