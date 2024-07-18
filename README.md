@@ -451,7 +451,7 @@ Write script in package.json file
 "scripts": {
   "dist": "npx tsc",
   "start": "cross-env NODE_ENV=production nodemon dist/server.js",
-  "dev": "cross-env NODE_ENV=development nodemon dist/server.js"
+  "dev": "cross-env NODE_ENV=development nodemon src/server.ts"
 }
 ```
 
@@ -489,3 +489,313 @@ console.log(config)
 ```
 
 after run this by npm run start you will see the object of the Env prodcution
+
+## Express Js
+
+### About
+
+Express.js is a tool that helps you build web applications and APIs using Node.js. It simplifies the process of handling different web requests (like GET, POST, etc.) and managing server responses.
+
+First, install Express.js and its type definitions:
+
+```bash
+npm install express
+npm install --save-dev @types/express
+```
+
+#### Entry Point
+
+Create an app.ts file to initialize the Express application. Make sure to define its type as Application from Express:
+
+```ts
+import express, { Application } from 'express'
+
+const app: Application = express()
+
+export default app
+```
+
+#### Server Setup
+
+Create a server.ts file to import and configure the app, incorporating environment variables from a config.ts file:
+
+```ts
+import config from './config/config'
+import app from './app'
+
+const server = app.listen(config.PORT)
+```
+
+An Immediately Invoked Function Expression (IIFE) is a JavaScript function that runs as soon as it is defined. It's useful in several scenarios, particularly in the context of your Express application
+
+```ts
+import config from './config/config'
+import app from './app'
+
+const server = app.listen(config.PORT)
+
+;(() => {
+    try {
+        console.info(`APPLICATION_STARTED`, {
+            meta: {
+                PORT: config.PORT,
+                SERVAL_URL: config.SERVEL_URL
+            }
+        })
+    } catch (err) {
+        console.error(`APPLICATION_ERROR`, {
+            meta: err
+        })
+        server.close((error) => {
+            if (error) {
+                console.error(`APPLICATION_ERROR`, {
+                    meta: err
+                })
+            }
+            process.exit(1)
+        })
+    }
+})()
+```
+
+#### Running the Server
+
+Check whether your server is running with:
+
+```bash
+npm run dev
+
+```
+
+If the server is working correctly, you should see:
+
+APPLICATION_STARTED { meta: { PORT: '3000', SERVER_URL: 'http://localhost:3000' } }
+
+If not, check the error messages and resolve any issues.
+
+#### Middleware
+
+In app.ts, add middleware to handle JSON data and serve static files:
+
+```ts
+import path from 'path'
+app.use(express.json())
+app.use(express.static(path.join(__dirname, '../', 'public')))
+```
+
+#### Router
+
+Create a router in the routes folder. In apiRouter.ts, define your routes and bind them to controllers:
+
+```ts
+import { Router } from 'express'
+
+const router = Router()
+
+router.route('/self').get(apiController.self)
+export default router
+```
+
+Then, call the router in app.ts:
+
+```ts
+import router from './routes/apiRouter'
+
+app.use('/api/v1', router)
+```
+
+#### Controller
+
+Create a controller in controllers folder. In apiController.ts, define the controller actions:
+
+```ts
+import { Request, Response } from 'express'
+export default {
+    self: (_: Request, res: Response) => {
+        try {
+            res.sendStatus(200)
+        } catch (error) {
+            res.sendStatus(500)
+        }
+    }
+}
+```
+
+Test the endpoint with Postman or Thunder Client. You should see Status: 200 OK.
+If not, check the error messages and resolve any issues.
+
+#### Types
+
+Define types for HTTP responses and errors in the types folder. Create a types.ts file:
+
+```ts
+export type THttpResponse = {
+    success: boolean
+    statusCode: number
+    request: {
+        ip?: string | null
+        method: string
+        url: string
+    }
+    message: string
+    data: unknown
+}
+export type THttpError = {
+    success: boolean
+    statusCode: number
+    request: {
+        ip?: string | null
+        method: string
+        url: string
+    }
+    message: string
+    data: unknown
+    trace?: object | null
+}
+```
+
+-   success: Indicates whether the response is successful (true) or failed (false).
+-   statusCode: HTTP status code (e.g., 200 for OK, 500 for Server Error, etc.).
+-   request: An object containing details about the request:
+    -   ip: The IP address of the user (string or null).
+    -   method: The HTTP method (GET, POST, DELETE, PATCH).
+    -   url: The requested URL.
+-   message: Custom message for the response.
+-   data: Contains the response data, which can be of any type (JSON).
+-   trace: An optional object for error tracing, used to trace the error in which line of code.
+
+#### Context Variables
+
+Create context variables for global use. Create application.ts and responseMessage.ts files.
+
+`responseMessage.ts`
+
+```ts
+export default {
+    SUCCESS: `The Operation has been successful`,
+    SOMETHING_WENT_WRONG: `error`
+}
+```
+
+`application.ts`
+
+```ts
+export enum EApplicationEnvironment {
+    PRODUCTION = 'production',
+    DEVELOPMENT = 'development'
+}
+```
+
+#### Utils
+
+HTTP Response
+
+Create a httpResponse.ts file in the utils folder to handle structured JSON responses:
+
+```ts
+import { Request, Response } from 'express'
+import { THttpResponse } from '../@types/types'
+import config from '../config/config'
+import { EApplicationEnvironment } from '../constants/application'
+
+export default (req: Request, res: Response, responseStatusCode: number, responseMessage: string, data: unknown = null): void => {
+    const response: THttpResponse = {
+        success: true,
+        statusCode: responseStatusCode,
+        request: {
+            ip: req.ip || null,
+            method: req.method,
+            url: req.originalUrl
+        },
+        message: responseMessage,
+        data: data
+    }
+
+    //log
+    console.info(`CONTROLLER_RESPONSE`, {
+        meta: response
+    })
+
+    //Production Env check
+    if (config.ENV === EApplicationEnvironment.PRODUCTION) {
+        delete response.request.ip
+    }
+
+    res.status(responseStatusCode).json(response)
+}
+```
+
+Error Handling
+
+Create an errorObjects.ts file to handle error objects:
+
+```ts
+import { Request } from 'express'
+import { THttpError } from '../@types/types'
+import responseMessage from '../constants/responseMessage'
+import config from '../config/config'
+import { EApplicationEnvironment } from '../constants/application'
+
+// eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+export default (err: Error | unknown, req: Request, errorStatusCode: number = 500): THttpError => {
+    const errorObj: THttpError = {
+        success: false,
+        statusCode: errorStatusCode,
+        request: {
+            ip: req.ip || null,
+            method: req.method,
+            url: req.originalUrl
+        },
+        message: err instanceof Error ? err.message || responseMessage.SOMETHING_WENT_WRONG : responseMessage.SOMETHING_WENT_WRONG,
+        data: null,
+        trace: err instanceof Error ? { error: err.stack } : null
+    }
+
+    //log
+    console.info(`CONTROLLER_ERROR`, {
+        meta: errorObj
+    })
+
+    //Production Env check
+    if (config.ENV === EApplicationEnvironment.PRODUCTION) {
+        delete errorObj.request.ip
+        delete errorObj.trace
+    }
+
+    return errorObj
+}
+```
+
+Create an httpError.ts file to handle error response:
+
+```ts
+import { NextFunction, Request } from 'express'
+import errorObjects from './errorObjects'
+
+// eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+export default (nextFunc: NextFunction, err: Error | unknown, req: Request, errorStatusCode: number = 500): void => {
+    const errorObj = errorObjects(err, req, errorStatusCode)
+    return nextFunc(errorObj)
+}
+```
+
+Import all utils in the apiController file
+
+```ts
+import { NextFunction, Request, Response } from 'express'
+import httpResponse from '../utils/httpResponse'
+import responseMessage from '../constants/responseMessage'
+import httpError from '../utils/httpError'
+
+export default {
+    self: (req: Request, res: Response, next: NextFunction) => {
+        try {
+            httpResponse(req, res, 200, responseMessage.SUCCESS, {})
+        } catch (error) {
+            httpError(next, error, req, 500)
+        }
+    }
+}
+```
+
+        <!-- ====================================================================================== -->
