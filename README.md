@@ -798,4 +798,29 @@ export default {
 }
 ```
 
+## Global Error Handler
+
+Create a folder named middleware and add a file globalErrorHandler.ts. This middleware will handle errors globally and ensure consistent error responses in JSON format instead of HTML.
+
+`middleware/globalErrorHandler.ts`
+
+```ts
+
+import { Request, Response, NextFunction } from 'express'
+import { THttpError } from '../@types/types'
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export default (err: THttpError, \_: Request, res: Response, \_\_: NextFunction) => {
+res.status(err.statusCode).json(err)
+}
+
+```
+
+To use the global error handler, import it and apply it as middleware in your app.ts file:
+
+```ts
+//Global Error handler
+app.use(globalErrorHandler)
+```
+
         <!-- ====================================================================================== -->
