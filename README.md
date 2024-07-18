@@ -673,7 +673,8 @@ Create context variables for global use. Create application.ts and responseMessa
 ```ts
 export default {
     SUCCESS: `The Operation has been successful`,
-    SOMETHING_WENT_WRONG: `error`
+    SOMETHING_WENT_WRONG: `error`,
+    NOT_FOUND: (entity: string) => `${entity} not found`
 }
 ```
 
@@ -824,3 +825,21 @@ app.use(globalErrorHandler)
 ```
 
         <!-- ====================================================================================== -->
+
+## 404 Handler
+
+To handle 404 errors properly and respond in a structured way, add the following code to your app.ts file:
+
+```ts
+import { Request, Response, NextFunction } from 'express'
+// 404 Error Handler
+app.use((req: Request, _: Response, next: NextFunction) => {
+    try {
+        throw new Error(responseMessage.NOT_FOUND('route'))
+    } catch (error) {
+        httpError(next, error, req, 500)
+    }
+})
+```
+
+This code snippet throws a 404 error when a route does not exist and uses the httpError utility to handle the error properly.
