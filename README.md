@@ -824,8 +824,6 @@ To use the global error handler, import it and apply it as middleware in your ap
 app.use(globalErrorHandler)
 ```
 
-        <!-- ====================================================================================== -->
-
 ## 404 Handler
 
 To handle 404 errors properly and respond in a structured way, add the following code to your app.ts file:
@@ -843,3 +841,134 @@ app.use((req: Request, _: Response, next: NextFunction) => {
 ```
 
 This code snippet throws a 404 error when a route does not exist and uses the httpError utility to handle the error properly.
+
+## Logger
+
+### About
+
+A logger is a tool used in software development to record log messages. These messages are typically used for debugging, monitoring, and auditing purposes. In the context of a Node.js/Express.js application, a logger can help track the application's behavior and identify issues.
+
+To use a logger in your Express.js application, you can use popular logging libraries such as winston or morgan. Here's an example using winston:
+
+Install winston
+First, install winston:
+
+```bash
+npm install winston
+
+```
+
+Configure winston
+Create a file logger.ts in a utils or middleware directory:
+
+Make custom log format for console
+
+`utils/logger.ts`
+
+```ts
+import { createLogger, format, transports } from 'winston'
+import { ConsoleTransportInstance } from 'winston/lib/winston/transports'
+import util from 'util'
+
+// Custom log format for console
+const consoleLogFormat = format.printf((info) => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const { level, message, timestamp, meta = {} } = info
+    const customLevel = level.toUpperCase()
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const customTimestamp = timestamp
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const customMessage = message
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const customMeta = util.inspect(meta, {
+        showHidden: false,
+        depth: null
+    })
+
+    const customLog = `${customLevel} [${customTimestamp}] ${customMessage}\n${'META'}: ${customMeta}\n`
+    return customLog
+})
+
+// Console transport configuration
+const consoleTransport = (): Array<ConsoleTransportInstance> => {
+    return [
+        new transports.Console({
+            level: 'info',
+            format: format.combine(format.timestamp(), consoleLogFormat)
+        })
+    ]
+}
+
+// Create and export the logger
+export default createLogger({
+    defaultMeta: {
+        meta: {}
+    },
+    transports: consoleTransport()
+})
+```
+
+Replace all `console.info` into the `logger.info`
+
+Make Custom log format for file
+
+```ts
+import { createLogger, format, transports } from 'winston'
+import { FileTransportInstance } from 'winston/lib/winston/transports'
+import util from 'util'
+import config from '../config/config'
+import { EApplicationEnvironment } from '../constants/application'
+import path from 'path'
+
+// Custom log format for file
+const fileLogFormat = format.printf((info) => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const { level, message, timestamp, meta = {} } = info
+    const logMeta: Record<string, unknown> = {}
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    for (const [key, value] of Object.entries(meta)) {
+        if (value instanceof Error) {
+            logMeta[key] = {
+                name: value.name,
+                message: value.message,
+                trace: value.stack || ''
+            }
+        } else {
+            logMeta[key] = value
+        }
+    }
+
+    const logData = {
+        level: level.toUpperCase(),
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        message,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        timestamp,
+        meta: logMeta
+    }
+
+    return JSON.stringify(logData, null, 4)
+})
+
+// File transport configuration
+const fileTransport = (): Array<FileTransportInstance> => {
+    return [
+        new transports.File({
+            filename: path.join(__dirname, '../', '../', 'logs', `${config.ENV}.log`),
+            level: 'info',
+            format: format.combine(format.timestamp(), fileLogFormat)
+        })
+    ]
+}
+
+// Create and export the logger
+export default createLogger({
+    defaultMeta: {
+        meta: {}
+    },
+    transports: [...fileTransport()]
+})
+```
+
+  <!-- ====================================================================================== -->

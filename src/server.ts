@@ -1,23 +1,24 @@
 import config from './config/config'
 import app from './app'
+import logger from './utils/logger'
 
 const server = app.listen(config.PORT)
 
 ;(() => {
     try {
-        console.info(`APPLICATION_STARTED`, {
+        logger.info(`APPLICATION_STARTED`, {
             meta: {
                 PORT: config.PORT,
                 SERVAL_URL: config.SERVEL_URL
             }
         })
     } catch (err) {
-        console.error(`APPLICATION_ERROR`, {
+        logger.error(`APPLICATION_ERROR`, {
             meta: err
         })
         server.close((error) => {
             if (error) {
-                console.error(`APPLICATION_ERROR`, {
+                logger.error(`APPLICATION_ERROR`, {
                     meta: err
                 })
             }
