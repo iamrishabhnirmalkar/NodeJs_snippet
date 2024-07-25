@@ -1,9 +1,0 @@
-{
-    "level": "INFO",
-    "message": "APPLICATION_STARTED",
-    "timestamp": "2024-07-18T06:16:15.845Z",
-    "meta": {
-        "PORT": "8000",
-        "SERVAL_URL": "http://localhost:3000"
-    }
-}

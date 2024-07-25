@@ -13,9 +13,9 @@
 -   [Global Error Handler](#global-error-handler)
 -   [404 Handler](#404-handler)
 -   [Logger](#logger)
--   [Source Map]
--   [Colorful Terminal]
--   [MongoDB]
+-   [Source Map](#source-map)
+-   [Colorful Terminal](#colorful-terminal)
+-   [MongoDB](#mongodb)
 -   [Database Log Storage]
 -   [Database Migration]
 -   [Health Endpoint]
@@ -972,3 +972,46 @@ export default createLogger({
 ```
 
   <!-- ====================================================================================== -->
+
+## Source Map
+
+### About
+
+A source map is a file that maps transformed or compiled code (such as minified JavaScript) back to the original source code (like TypeScript, SCSS, or ES6). This mapping allows developers to debug their code more effectively by letting them see the original source code in the browser's developer tools, even though the running code has been minified or compiled into a different format.
+
+When you build a TypeScript project, the build process generates JavaScript files for production. Errors that occur will be shown in these JavaScript files, which can make debugging difficult. However, by using source maps, you can trace back errors to the original TypeScript files, making it easier to debug.
+
+Install source-map-support and its type definitions:
+
+```sh
+npm i source-map-support
+npm i @types/source-map-support -D
+
+```
+
+Enable source maps in your tsconfig.json file:
+
+```json
+{
+    "compilerOptions": {
+        "sourceMap": true
+    }
+}
+```
+
+After enabling source maps, a .map file will be generated in the dist folder during the build process. This file binds the generated JavaScript back to the original TypeScript code.
+
+To utilize source maps in your code for better error tracing, add the following in your logger.ts file:
+
+```ts
+import * as sourcemapsupport from 'source-map-support'
+
+// Linking Trace support
+sourcemapsupport.install()
+```
+
+### About
+
+## Colorful Terminal
+
+## MongoDB
