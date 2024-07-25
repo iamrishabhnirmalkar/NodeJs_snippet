@@ -5,26 +5,41 @@ import config from '../config/config'
 import { EApplicationEnvironment } from '../constants/application'
 import path from 'path'
 import * as sourcemapsupport from 'source-map-support'
+import { red, blue, yellow, green, magenta } from 'colorette'
 
 // Linking Trace support
 sourcemapsupport.install()
+
+const colorizelevel = (level: string) => {
+    switch (level) {
+        case 'ERROR':
+            return red(level)
+        case 'INFO':
+            return blue(level)
+        case 'WARN':
+            return yellow(level)
+        default:
+            return level
+    }
+}
 
 // Custom log format for console
 const consoleLogFormat = format.printf((info) => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const { level, message, timestamp, meta = {} } = info
-    const customLevel = level.toUpperCase()
+    const customLevel = colorizelevel(level.toUpperCase())
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const customTimestamp = timestamp
+    const customTimestamp = green(timestamp as string)
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const customMessage = message
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const customMeta = util.inspect(meta, {
         showHidden: false,
-        depth: null
+        depth: null,
+        colors: true
     })
 
-    const customLog = `${customLevel} [${customTimestamp}] ${customMessage}\n${'META'}: ${customMeta}\n`
+    const customLog = `${customLevel} [${customTimestamp}] ${customMessage}\n${magenta('META')}: ${customMeta}\n`
     return customLog
 })
 

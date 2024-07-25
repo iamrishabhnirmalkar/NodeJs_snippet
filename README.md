@@ -1010,8 +1010,55 @@ import * as sourcemapsupport from 'source-map-support'
 sourcemapsupport.install()
 ```
 
+## Colorful Terminal
+
 ### About
 
-## Colorful Terminal
+Using color in the terminal can help you easily distinguish errors, warnings, and other log messages according to your preferences. In this project, we use Colorette to colorize terminal output, making it easier to identify different log levels and metadata.
+
+To install Colorette, run:
+
+```sh
+npm i colorette
+
+```
+
+To customize colors or styles according to your preferences, add the following code to your logger.ts file:
+
+```ts
+import { red, blue, yellow, green, magenta } from 'colorette'
+
+const colorizelevel = (level: string) => {
+    switch (level) {
+        case 'ERROR':
+            return red(level)
+        case 'INFO':
+            return blue(level)
+        case 'WARN':
+            return yellow(level)
+        default:
+            return level
+    }
+}
+```
+
+To apply these colors in your logger, use the colorizeLevel function:
+
+```ts
+const customLevel = colorizelevel(level.toUpperCase())
+```
+
+For example, to colorize the META information in your logs, you can use:
+
+```ts
+const customLog = `${customLevel} [${customTimestamp}] ${customMessage}\n${magenta('META')}: ${customMeta}\n`
+```
+
+To apply multiple styles or colors, you can combine them like this:
+
+```ts
+import { red, bold } from 'colorette'
+const styledLevel = red(bold(level))
+```
 
 ## MongoDB
