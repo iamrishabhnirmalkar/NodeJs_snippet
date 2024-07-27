@@ -163,10 +163,8 @@ mkdir docker logs nginx scripts public test
 
 Next, navigate to the src directory and create its subdirectories:
 
-``sh
+```sh
 mkdir -p src/config src/constants src/controllers src/middlewares src/models src/routes src/services src/types src/utils src/views
-
-```
 
 ```
 
@@ -1062,3 +1060,58 @@ const styledLevel = red(bold(level))
 ```
 
 ## MongoDB
+
+### About
+
+MongoDB is a NoSQL database that can be used to store data. While MySQL is also commonly used, MongoDB is particularly popular for its flexibility and scalability. You can use MongoDB or any other database according to your requirements. In this guide, we'll focus on using MongoDB with Mongoose for managing database connections in a Node.js application.
+
+Mongoose is an Object Data Modeling (ODM) library for MongoDB and Node.js. To install Mongoose, run:
+
+```sh
+npm install mongoose
+```
+
+Create a .env.production or .env.development file in the root directory of your project and add the MongoDB connection URL. The URL includes the database name after the last /.
+
+```env
+DATABASE_URL = "mongodb://localhost:27017/node-js-snippet"
+```
+
+In your services folder, create a file named databaseService.ts for handling the database connection:
+
+```ts
+import mongoose from 'mongoose'
+import config from '../config/config'
+
+export default {
+    connect: async () => {
+        try {
+            await mongoose.connect(config.DATABASE_URL as string)
+            return mongoose.connection
+        } catch (error) {
+            throw error
+        }
+    }
+}
+```
+
+In your server.ts file, import and use the databaseService to connect to the database. Make sure to handle async/await correctly:
+
+```ts
+import databaseService from './services/databaseService'
+//DataBase Connection
+const connection = await databaseService.connect()
+logger.info(`DATABASE_CONNECTION`, {
+    meta: {
+        CONNECTION_NAME: connection.name
+    }
+})
+```
+
+If you encounter issues with async/await and ESLint, you may need to adjust your ESLint configuration. Add the following rule to your .eslintrc.js or .eslintrc.json file to disable the no-useless-catch rule:
+
+```json
+"rules": {
+    "no-useless-catch": "off"
+}
+```

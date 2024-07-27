@@ -1,11 +1,21 @@
 import config from './config/config'
 import app from './app'
 import logger from './utils/logger'
+import databaseService from './services/databaseService'
 
 const server = app.listen(config.PORT)
 
-;(() => {
+// eslint-disable-next-line @typescript-eslint/no-floating-promises
+;(async () => {
     try {
+        //DataBase Connection
+        const connection = await databaseService.connect()
+        logger.info(`DATABASE_CONNECTION_SUCCESS`, {
+            meta: {
+                CONNECTION_NAME: connection.name
+            }
+        })
+
         logger.info(`APPLICATION_STARTED`, {
             meta: {
                 PORT: config.PORT,

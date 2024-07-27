@@ -13,6 +13,7 @@ export default tseslint.config({
     extends: [eslint.configs.recommended, ...tseslint.configs.recommendedTypeChecked, eslintconfigPrettier],
     rules: {
         'no-console': 'error',
+        'no-useless-catch': 0,
         quotes: ['error', 'single', { allowTemplateLiterals: true }]
     }
 })
