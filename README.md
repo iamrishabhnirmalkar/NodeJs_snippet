@@ -16,7 +16,7 @@
 -   [Source Map](#source-map)
 -   [Colorful Terminal](#colorful-terminal)
 -   [MongoDB](#mongodb)
--   [Database Log Storage]
+-   [Database Log Storage](#database-log-storage)
 -   [Database Migration]
 -   [Health Endpoint]
 -   [Security - Helmet JS]
@@ -1115,3 +1115,48 @@ If you encounter issues with async/await and ESLint, you may need to adjust your
     "no-useless-catch": "off"
 }
 ```
+
+## Database Log Storage
+
+### About
+
+In scenarios where file-based log storage is limited, storing logs in a database can be a better alternative. For this purpose, we use winston-mongodb, which is an extension of the winston logger that allows logs to be stored in a MongoDB database.
+
+To install the winston-mongodb package, use the following command:
+
+```sh
+npm i winston-mongodb
+```
+
+After installing the package, configure MongoDB as a transport for winston in your logger.ts file:
+
+```ts
+import 'winston-mongodb'
+import { MongoDBTransportInstance } from 'winston-mongodb'
+
+// MongoDB transport configuration
+const mongodbTransport = (): Array<MongoDBTransportInstance> => {
+    return [
+        new transports.MongoDB({
+            level: 'info',
+            db: config.DATABASE_URL as string,
+            metaKey: 'meta',
+            // expire in 30 days
+            expireAfterSeconds: 3600 * 24 * 30,
+            options: {
+                useUnifiedTopology: true
+            },
+            collection: 'application-logs'
+        })
+    ]
+}
+
+export default createLogger({
+    defaultMeta: {
+        meta: {}
+    },
+    transports: [...mongodbTransport()]
+})
+```
+
+Make sure to replace config.DATABASE_URL with your actual MongoDB connection URL. This configuration sets up a MongoDB transport that logs all messages at the 'info' level and above, storing them in the application-logs collection. The logs will automatically expire after 30 days.

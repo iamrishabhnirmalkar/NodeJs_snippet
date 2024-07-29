@@ -1,6 +1,8 @@
 import { createLogger, format, transports } from 'winston'
 import { ConsoleTransportInstance, FileTransportInstance } from 'winston/lib/winston/transports'
 import util from 'util'
+import 'winston-mongodb'
+import { MongoDBTransportInstance } from 'winston-mongodb'
 import config from '../config/config'
 import { EApplicationEnvironment } from '../constants/application'
 import path from 'path'
@@ -98,10 +100,27 @@ const fileTransport = (): Array<FileTransportInstance> => {
     ]
 }
 
+// MongoDB transport configuration
+const mongodbTransport = (): Array<MongoDBTransportInstance> => {
+    return [
+        new transports.MongoDB({
+            level: 'info',
+            db: config.DATABASE_URL as string,
+            metaKey: 'meta',
+            // expire in 30 days
+            expireAfterSeconds: 3600 * 24 * 30,
+            options: {
+                useUnifiedTopology: true
+            },
+            collection: 'application-logs'
+        })
+    ]
+}
+
 // Create and export the logger
 export default createLogger({
     defaultMeta: {
         meta: {}
     },
-    transports: [...fileTransport(), ...consoleTransport()]
+    transports: [...fileTransport(), ...consoleTransport(), ...mongodbTransport()]
 })
