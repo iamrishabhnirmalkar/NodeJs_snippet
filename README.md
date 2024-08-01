@@ -17,7 +17,7 @@
 -   [Colorful Terminal](#colorful-terminal)
 -   [MongoDB](#mongodb)
 -   [Database Log Storage](#database-log-storage)
--   [Database Migration]
+-   [Database Migration](#database-migration)
 -   [Health Endpoint]
 -   [Security - Helmet JS]
 -   [Security - CORS]
@@ -1160,3 +1160,87 @@ export default createLogger({
 ```
 
 Make sure to replace config.DATABASE_URL with your actual MongoDB connection URL. This configuration sets up a MongoDB transport that logs all messages at the 'info' level and above, storing them in the application-logs collection. The logs will automatically expire after 30 days.
+
+## Database Migration
+
+### About
+
+Database migration is the process of moving data from one database to another or changing the structure of an existing database.
+
+```sh
+npm i ts-migrate-mongoose
+```
+
+Create a migration.js file in the scripts folder with the following content:
+
+```js
+/*        eslint-disable no-console     */
+const { exec } = require('child_process')
+
+// Command line Argument
+const command = process.argv[2]
+const migrationName = process.argv[3]
+
+//  Migration Commands
+const validCommands = ['create', 'up', 'down', 'list', 'prune']
+if (!validCommands.includes(command)) {
+    console.error(`Invalid command:command must be one of ${validCommands}`)
+    process.exit(0)
+}
+
+const commandWithoutMigrationNameRequired = ['list', 'prune']
+if (!commandWithoutMigrationNameRequired.includes(command)) {
+    if (!migrationName) {
+        console.error(`migration name is required`)
+        process.exit(0)
+    }
+}
+
+function runNpmScript() {
+    return new Promise((resolve, reject) => {
+        let execCommand = ``
+        if (commandWithoutMigrationNameRequired.includes(command)) {
+            execCommand = `migrate ${command}`
+        } else {
+            execCommand = `migrate ${command} ${migrationName}`
+        }
+
+        const childProcess = exec(execCommand, (error, stdout) => {
+            if (error) {
+                reject(`Error runnig script: ${error}`)
+            } else {
+                resolve(stdout)
+            }
+        })
+        childProcess.stderr.on('data', (data) => {
+            console.error(data)
+        })
+    })
+}
+
+// Example Usage:
+runNpmScript()
+    .then((output) => {
+        console.info(output)
+    })
+    .catch((error) => {
+        console.info('Error:', error)
+    })
+```
+
+Create a migration folder in the root of your repository.
+
+Create a .env file in the root of your project with the following content:
+
+```env
+# Migration
+MIGRATE_MONGO_URI = "mongodb://localhost:27017/node-js-snippet"
+MIGRATE_AUTOSYNC = "true"
+```
+
+Add the migration scripts to your package.json file:
+
+```json
+"migrate:dev": "cross-env MIGRATE_MODE=development node scripts/migration.js",
+"migrate:prod": "cross-env MIGRATE_MODE=production node scripts/migration.js"
+```
