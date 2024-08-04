@@ -18,7 +18,7 @@
 -   [MongoDB](#mongodb)
 -   [Database Log Storage](#database-log-storage)
 -   [Database Migration](#database-migration)
--   [Health Endpoint]
+-   [Health Endpoint](#health-endpoint)
 -   [Security - Helmet JS]
 -   [Security - CORS]
 -   [Security - Rate Limiting]
@@ -1243,4 +1243,63 @@ Add the migration scripts to your package.json file:
 ```json
 "migrate:dev": "cross-env MIGRATE_MODE=development node scripts/migration.js",
 "migrate:prod": "cross-env MIGRATE_MODE=production node scripts/migration.js"
+```
+
+## Health Endpoint
+
+### About
+
+Health endpoint is an API endpoint that provides information about the health and status of the application and the system it is running on. This endpoint is typically used by monitoring systems, load balancers, or orchestration tools like Kubernetes to check if the application is running properly and to take necessary actions if it is not.
+
+In `utils/quicker.ts`, we define functions to get system and application health metrics:
+
+```ts
+import os from 'os'
+import config from '../config/config'
+
+export default {
+    getSystemHealth: () => {
+        return {
+            cpuUsage: os.loadavg(),
+            // Convert bytes to MB and format
+            totalMemory: `${(os.totalmem() / 1024 / 1024).toFixed(2)} MB`,
+            freeMemory: `${(os.freemem() / 1024 / 1024).toFixed(2)} MB`
+        }
+    },
+    getApplicationHealth: () => {
+        return {
+            environment: config.ENV,
+            uptime: `${process.uptime().toFixed(2)} Second`,
+            memoryUsage: {
+                heapTotal: `${(process.memoryUsage().heapTotal / 1024 / 1024).toFixed(2)} MB`,
+                heapUsed: `${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)} MB`
+            }
+        }
+    }
+}
+```
+
+In `apiRouter.ts`, define the route for the health endpoint:
+
+```ts
+router.route('/health').get(apiController.health)
+```
+
+In `apiController.ts`, implement the controller logic for handling the health endpoint request:
+
+```ts
+import quicker from '../utils/quicker'
+health: (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const healthData = {
+            application: quicker.getApplicationHealth(),
+            system: quicker.getSystemHealth(),
+            timestamp: Date.now()
+        }
+
+        httpResponse(req, res, 200, responseMessage.SUCCESS, healthData)
+    } catch (err) {
+        httpError(next, err, req, 500)
+    }
+}
 ```
