@@ -19,11 +19,11 @@
 -   [Database Log Storage](#database-log-storage)
 -   [Database Migration](#database-migration)
 -   [Health Endpoint](#health-endpoint)
--   [Security - Helmet JS]
--   [Security - CORS]
--   [Security - Rate Limiting]
--   [Dependency Updates]
--   [Docker]
+-   [Security - Helmet JS](#security---helmet-js)
+-   [Security - CORS](#security---cors)
+-   [Security - Rate Limiting](#security---rate-limiting)
+-   [Dependency Updates](#dependency-updates)
+-   [Docker](#docker)
 
 ## Node Project
 
@@ -1303,3 +1303,34 @@ health: (req: Request, res: Response, next: NextFunction) => {
     }
 }
 ```
+
+## Security - Helmet JS
+
+### About
+
+Helmet.js is used to provide security to your API by setting various HTTP headers. When you build an API and test it, the headers may reveal the framework you used (e.g., Express, Laravel), which can be a security issue. To hide this information and enhance security, you can use Helmet.js in your Node.js application.
+
+First, install Helmet.js:
+
+```bash
+npm i helmet
+```
+
+In your `app.ts` file, import Helmet and use it as middleware:
+
+```ts
+import helmet from 'helmet'
+
+// Assuming you have an Express app initialized as 'app'
+app.use(helmet())
+```
+
+By performing this simple task, you can check your API in Postman. In the header section, you will notice that the backend framework details are no longer visible, which is beneficial for API security.
+
+## Security - CORS
+
+## Security - Rate Limiting
+
+## Dependency Updates
+
+## Docker
