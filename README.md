@@ -1367,6 +1367,8 @@ FRONTEND_URL = http://localhost:3000/
 
 ## Security - Rate Limiting
 
+### About
+
 ## Dependency Updates
 
 ## Docker
