@@ -452,6 +452,17 @@ Write script in package.json file
   "dev": "cross-env NODE_ENV=development nodemon src/server.ts"
 }
 ```
+- Create .env, .env.development, and .env.production Files: These files will store your environment-specific configuration.
+- Ensure .env Files Are Not Committed: Add .env files to your .gitignore to ensure sensitive information is not committed to version control.
+
+```env
+# General
+ENV = development/development
+PORT = 3000
+SERVEL_URL = http://localhost:3000
+# DataBase
+DATABASE_URL = ""
+```
 
 Create a configuration file in the config folder and set up the configuration for the environment variables.
 
