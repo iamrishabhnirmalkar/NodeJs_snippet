@@ -1369,6 +1369,80 @@ FRONTEND_URL = http://localhost:3000/
 
 ### About
 
+Rate limiting is a technique used to control the amount of incoming or outgoing traffic to or from a system. It helps protect your system from being overwhelmed by too many requests in a short period, which could lead to performance degradation or service outages.
+
+Create a file named `rateLimiter.ts` in your config folder and add the following code:
+
+```ts
+import { Connection } from 'mongoose'
+import { RateLimiterMongo } from 'rate-limiter-flexible'
+
+export let rateLimiterMongo: null | RateLimiterMongo = null
+
+// In 60 Sec 10 Request Handel
+const DURATION = 60
+const POINTS = 10
+
+export const initRateLimiter = (mongooseConnection: Connection) => {
+    rateLimiterMongo = new RateLimiterMongo({
+        storeClient: mongooseConnection,
+        points: POINTS,
+        duration: DURATION
+    })
+}
+```
+
+Update your `responseMessage.ts` file to include a message for too many requests:
+
+```ts
+TOO_MANY_REQUESTS: `Too many requests! Please try again after some time`
+```
+
+Create a file named `rateLimit.ts` in your middlewares folder (or wherever you manage your middlewares) and add the following code:
+
+```ts
+import { NextFunction, Request, Response } from 'express'
+import config from '../config/config'
+import { EApplicationEnvironment } from '../constants/application'
+import { rateLimiterMongo } from '../config/rateLimiter'
+import httpError from '../utils/httpError'
+import responseMessage from '../constants/responseMessage'
+
+export default (req: Request, _: Response, next: NextFunction) => {
+    if (config.ENV === EApplicationEnvironment.DEVELOPMENT) {
+        return next()
+    }
+
+    if (rateLimiterMongo) {
+        rateLimiterMongo
+            .consume(req.ip as string, 1)
+            .then(() => {
+                next()
+            })
+            .catch(() => {
+                httpError(next, new Error(responseMessage.TOO_MANY_REQUESTS), req, 429)
+            })
+    }
+}
+```
+
+In your `server.ts` file, import the initRateLimiter function and initialize it with your MongoDB connection:
+
+```ts
+import { initRateLimiter } from './config/rateLimiter'
+
+// Rate Limiter
+initRateLimiter(connection)
+logger.info(`RATE_LIMITER_INITIATED`)
+```
+
+Apply the middleware using `app.use()` so it gets executed for every incoming request in `app.ts` file.
+
+```ts
+import rateLimiterMiddleware from './middlewares/ratelimit'
+app.use(rateLimiterMiddleware)
+```
+
 ## Dependency Updates
 
 ## Docker

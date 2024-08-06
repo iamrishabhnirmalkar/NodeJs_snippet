@@ -6,10 +6,12 @@ import responseMessage from './constants/responseMessage'
 import httpError from './utils/httpError'
 import helmet from 'helmet'
 import cors from 'cors'
+import rateLimiterMiddleware from './middlewares/ratelimit'
 
 const app: Application = express()
 
 // Middlewares
+app.use(rateLimiterMiddleware)
 app.use(helmet())
 app.use(
     cors({
