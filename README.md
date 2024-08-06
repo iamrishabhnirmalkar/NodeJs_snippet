@@ -1329,6 +1329,42 @@ By performing this simple task, you can check your API in Postman. In the header
 
 ## Security - CORS
 
+### About
+
+CORS (Cross-Origin Resource Sharing) is a security feature implemented by web browsers. It controls how web pages from one domain (origin) can request resources (like data) from a different domain.
+
+Install `cors` package:
+
+```bash
+npm install cors
+```
+
+Install TypeScript types for cors:
+
+```bash
+npm install @types/cors -D
+```
+
+In your `app.ts` file, you can import and use cors like this:
+
+```ts
+import cors from 'cors'
+app.use(
+    cors({
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'HEAD'],
+        origin: process.env.FRONTEND_URL,
+        credentials: true
+    })
+)
+```
+
+In `env` file Write the Frontend URL
+
+```env
+#Frontend URL
+FRONTEND_URL = http://localhost:3000/
+```
+
 ## Security - Rate Limiting
 
 ## Dependency Updates
