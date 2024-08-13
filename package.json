@@ -35,12 +35,12 @@
         "eslint": "^9.9.0",
         "eslint-config-prettier": "^9.1.0",
         "husky": "^9.1.4",
-        "lint-staged": "^15.2.8",
+        "lint-staged": "^15.2.9",
         "nodemon": "^3.1.4",
         "prettier": "3.3.3",
         "ts-node": "^10.9.2",
         "typescript": "^5.5.4",
-        "typescript-eslint": "^8.0.1"
+        "typescript-eslint": "^8.1.0"
     },
     "dependencies": {
         "colorette": "^2.0.20",
@@ -50,7 +50,6 @@
         "express": "^4.19.2",
         "helmet": "^7.1.0",
         "mongoose": "^8.5.2",
-        "npm-check-updates": "^17.0.6",
         "rate-limiter-flexible": "^5.0.3",
         "source-map-support": "^0.5.21",
         "ts-migrate-mongoose": "^3.8.3",

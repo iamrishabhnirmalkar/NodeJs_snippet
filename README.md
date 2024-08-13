@@ -1445,4 +1445,32 @@ app.use(rateLimiterMiddleware)
 
 ## Dependency Updates
 
+### About
+
+When you install something from npm, the packages may have newer versions released in the future. To keep your dependencies up-to-date, you can check for new versions and update them accordingly. Note: New versions might introduce issues, so always verify and test after updating.
+
+To use this utility, install npm-check-updates globally, as it’s not required for your project but is useful for checking package versions:
+
+```bash
+npm i npm-check-updates -g
+```
+
+To check for outdated package versions, run:
+
+```bash
+ncu
+```
+
+To update to the latest versions, use:
+
+````bash
+ncu -u
+```
+
 ## Docker
+
+````
+
+```
+
+```
