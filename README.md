@@ -1474,14 +1474,72 @@ ncu
 
 To update to the latest versions, use:
 
-````bash
+```bash
 ncu -u
 ```
 
 ## Docker
 
-````
+### About
+Docker is used for containerization. Docker is a platform used for developing, shipping, and running applications in a containerized environment. Whether or not to use Docker depends on your needs and preferences. If you choose to use Docker, follow the instructions below to set up your development and production environments.
+
+Folder Structure
+
+Create a folder named docker in your project directory, and within it, create the following subfolders for development and production configurations:
+
+
+- `docker/development/Dockerfile`
+- `docker/production/Dockerfile`
+
+Create a Dockerfile in the `docker/development` folder with the following content:
 
 ```
+# Using Lightweight docker image for node
+FROM node:20-alpine AS base
 
+# Setting Up Working Directory
+WORKDIR /usr/src/backend-app
+
+# Copying Package Files
+COPY package*.json ./
+
+# Installing Dependencies
+RUN npm ci
+
+# Copying Files
+COPY . .
+
+# Exposing Port
+EXPOSE 3000
+
+# Start Application
+CMD ["npm", "run", "dev"]
+```
+
+Create a Dockerfile in the `docker/production` folder with the following content:
+
+```
+# Using Lightweight docker image for node
+FROM node:20-alpine AS base
+
+# Setting Up Working Directory
+WORKDIR /usr/src/backend-app
+
+# Copying Package Files
+COPY package*.json ./
+
+# Installing Dependencies
+RUN npm ci --only=production
+
+# Copying Files
+COPY . .
+
+# Build TypeScript Project
+RUN npm run dist
+
+# Exposing Port
+EXPOSE 3000
+
+# Start Application
+CMD ["npm", "start"]
 ```
